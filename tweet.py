@@ -11,22 +11,28 @@ import random
 reply_list=[]
 poem_list=[]
 apology_list=[]
+praise_list=[]
+full_path='Documents/bot/bot/'
 
-f = open("./reply_list.txt","r")
+f = open(full_path+"reply_list.txt","r")
 for x in f:
     reply_list.append(int(x.rstrip("\n")))
 f.close()
 
-f = open("./poem.txt","r")
+f = open(full_path+"poem.txt","r")
 for x in f:
     poem_list.append(x.rstrip("\n"))
 f.close()
 
-f = open("./apology.txt","r")
+f = open(full_path+"apology.txt","r")
 for x in f:
     apology_list.append(x.rstrip("\n"))
 f.close()
 
+f = open(full_path+"praise.txt","r")
+for x in f:
+    praise_list.append(x.rstrip("\n"))
+f.close()
 
 
 print('start')
@@ -208,7 +214,11 @@ for i in range(1):
                 reply_text=reply_text+get_bedtime_end(date)
             
             elif 'readiness' in case:
+                tdate = dt.strptime(date, '%Y-%m-%d')-datetime.timedelta(days=1)
+                date=tdate.strftime("%Y-%m-%d")
                 reply_text=reply_text+get_readiness_score(date)+'%'
+                tdate = dt.strptime(date, '%Y-%m-%d')+datetime.timedelta(days=1)
+                date=tdate.strftime("%Y-%m-%d")
                 
             elif 'movement' in case:
                 reply_text=reply_text+get_movement(date)+'Meter'
@@ -222,6 +232,9 @@ for i in range(1):
             elif '詫び' in case:
                 reply_text=str(reply_text)+random.choice(apology_list)
         
+            elif '褒め' in case:
+                reply_text=str(reply_text)+random.choice(praise_list)
+        
             
         
             else:
@@ -230,7 +243,7 @@ for i in range(1):
             reply_text=reply_text+'\n'+date
             api.update_status(status = reply_text[:140], in_reply_to_status_id = status.id)
 
-f = open('reply_list.txt', 'w')
+f = open(full_path+'reply_list.txt', 'w')
 for x in reply_list:
     f.write(str(x) + "\n")
 f.close()
